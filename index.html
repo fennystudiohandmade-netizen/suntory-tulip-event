@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FENNY × 毛根手作鬱金香｜課程簡報</title>
+<style>
+  :root{
+    --pink:#e89bb4;
+    --pink-deep:#d36b8e;
+    --purple:#c8b3e2;       /* 淡雅薰衣草，貼近紫色鬱金香 */
+    --purple-deep:#9e83c6;
+    --green:#6fae7d;
+    --cream:#fdf7f3;
+    --ink:#4a3a40;
+    --ink-soft:#7a6a70;
+    --gold:#c9a96a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+    background:#241c28;color:var(--ink);overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+  }
+  /* ---- 16:9 fixed canvas ---- */
+  .deck{
+    position:relative;width:1280px;height:720px;flex:0 0 auto;
+    transform:scale(var(--s,1));transform-origin:center center;
+    border-radius:6px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5);
+  }
+  .slide{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    padding:48px 60px;opacity:0;visibility:hidden;transition:opacity .45s ease;
+    background:var(--cream);overflow:hidden;
+  }
+  .slide.active{opacity:1;visibility:visible;}
+  .slide::before{
+    content:"";position:absolute;top:-130px;right:-130px;width:360px;height:360px;border-radius:50%;
+    background:radial-gradient(circle,rgba(232,155,180,.26),transparent 70%);
+  }
+  .slide::after{
+    content:"";position:absolute;bottom:-150px;left:-130px;width:400px;height:400px;border-radius:50%;
+    background:radial-gradient(circle,rgba(200,179,226,.40),transparent 70%);
+  }
+  .slide > *{position:relative;z-index:1;}
+
+  .eyebrow{display:inline-block;font-size:16px;letter-spacing:4px;color:var(--pink-deep);font-weight:600;margin-bottom:14px;}
+  h1{font-size:58px;line-height:1.15;color:var(--ink);font-weight:800;}
+  h2{font-size:36px;color:var(--ink);font-weight:800;margin-bottom:4px;}
+  h3{font-size:20px;color:var(--pink-deep);font-weight:700;}
+  p,li{font-size:17px;line-height:1.7;color:var(--ink-soft);}
+  .lead{font-size:19px;color:var(--ink);}
+
+  .logo-slot{
+    position:absolute;top:40px;right:56px;z-index:3;border:2px dashed var(--gold);border-radius:10px;
+    padding:8px 16px;color:var(--gold);font-size:12px;letter-spacing:1px;background:rgba(255,255,255,.55);
+  }
+
+  /* ---- Cover ---- */
+  .cover{justify-content:center;align-items:center;text-align:center;
+    background:linear-gradient(150deg,#fbe6ee 0%,#fdf7f3 48%,#eee6f6 100%);}
+  .cover .eyebrow{margin-bottom:20px;}
+  .cover h1{margin-bottom:10px;}
+  .cover .divider{width:90px;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--pink),var(--purple));margin:0 auto 14px;}
+  .cover .sub{font-size:22px;color:var(--pink-deep);font-weight:600;letter-spacing:3px;margin-bottom:26px;}
+  .videos{display:flex;gap:48px;justify-content:center;align-items:flex-start;}
+  .vcard{position:relative;}
+  .vcard video{
+    display:block;height:320px;aspect-ratio:9/16;object-fit:cover;border-radius:18px;
+    box-shadow:0 16px 38px rgba(125,90,166,.30);background:#eee;
+  }
+  .vcard .tag{position:absolute;top:14px;left:50%;transform:translateX(-50%);
+    padding:6px 22px;border-radius:999px;font-weight:700;font-size:15px;color:#fff;white-space:nowrap;
+    box-shadow:0 4px 14px rgba(0,0,0,.22);}
+  .tag-pink{background:var(--pink);}
+  .tag-purple{background:var(--purple);}
+  .cover .credit{margin-top:24px;color:var(--ink-soft);font-size:16px;letter-spacing:2px;}
+  .cover .credit b{color:var(--pink-deep);font-size:18px;}
+
+  /* ---- Instructor + showreel (left/right) ---- */
+  .inst{flex-direction:row;gap:46px;align-items:stretch;}
+  .inst .left{flex:0 0 400px;display:flex;flex-direction:column;justify-content:center;}
+  .inst .photo-wrap{position:relative;width:170px;height:170px;margin-bottom:22px;}
+  .inst .photo-wrap img{width:170px;height:170px;object-fit:cover;border-radius:20px;box-shadow:0 14px 34px rgba(158,131,198,.35);}
+  .inst .photo-wrap .ring{position:absolute;inset:-10px;border:3px solid var(--purple);border-radius:28px;opacity:.55;}
+  .inst .left ul{list-style:none;margin-top:14px;}
+  .inst .left li{padding-left:28px;position:relative;margin-bottom:11px;font-size:17px;line-height:1.55;color:var(--ink-soft);}
+  .inst .left li::before{content:"🌷";position:absolute;left:0;top:1px;font-size:15px;}
+  .inst .right{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .showreel-label{font-size:15px;letter-spacing:2px;color:var(--pink-deep);font-weight:700;margin-bottom:12px;}
+  .reel{flex:1;min-height:0;display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(3,1fr);gap:9px;}
+  .reel .cell{min-width:0;min-height:0;border-radius:12px;overflow:hidden;background:#efe9f3;box-shadow:0 5px 14px rgba(0,0,0,.07);}
+  .reel video,.reel img{width:100%;height:100%;object-fit:cover;display:block;}
+  .reel .more{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;letter-spacing:1px;
+    background:linear-gradient(135deg,var(--pink),var(--purple));}
+  .reel .more span{font-size:26px;margin-bottom:4px;}
+
+  /* ---- Timeline ---- */
+  .timeline{margin-top:18px;}
+  .tl-row{
+    display:flex;align-items:center;gap:20px;margin-bottom:11px;
+    background:#fff;border-radius:14px;padding:12px 20px;box-shadow:0 5px 16px rgba(0,0,0,.05);
+    border-left:6px solid var(--pink);
+  }
+  .tl-row:nth-child(even){border-left-color:var(--purple);}
+  .tl-time{flex:0 0 84px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 0;
+    background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;border-radius:11px;}
+  .tl-time b{font-size:26px;line-height:1;}
+  .tl-time span{font-size:11px;letter-spacing:1px;}
+  .tl-body h3{margin-bottom:2px;font-size:19px;}
+  .tl-body p{font-size:15px;line-height:1.5;}
+
+  /* ---- Closing ---- */
+  .closing{justify-content:center;align-items:center;text-align:center;
+    background:linear-gradient(150deg,#eee6f6 0%,#fdf7f3 55%,#fbe6ee 100%);}
+  .closing .big{font-size:56px;margin-bottom:14px;}
+
+  /* ---- Nav (viewport-fixed, unscaled) ---- */
+  .nav{
+    position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+    display:flex;align-items:center;gap:16px;z-index:50;
+    background:rgba(255,255,255,.9);backdrop-filter:blur(6px);
+    padding:8px 16px;border-radius:999px;box-shadow:0 6px 22px rgba(0,0,0,.3);
+  }
+  .nav button{border:none;background:var(--purple);color:#fff;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;transition:background .2s,transform .1s;}
+  .nav button:hover{background:var(--purple-deep);}
+  .nav button:active{transform:scale(.92);}
+  .nav .count{font-size:14px;color:var(--ink-soft);min-width:48px;text-align:center;}
+  .progress{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--pink),var(--purple));z-index:60;transition:width .4s ease;}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="deck" id="deck">
+
+  <!-- 1. COVER -->
+  <section class="slide cover active">
+    <div class="logo-slot">三得利 LOGO 預留區</div>
+    <div class="eyebrow">FENNY × 毛根手作花藝體驗</div>
+    <h1>毛根手作鬱金香</h1>
+    <div class="divider"></div>
+    <div class="sub">暖暖毛根鬱金香手作體驗</div>
+    <div class="videos">
+      <div class="vcard">
+        <video src="assets/tulip-pink.mp4" autoplay muted loop playsinline></video>
+        <div class="tag tag-pink">粉色鬱金香</div>
+      </div>
+      <div class="vcard">
+        <video src="assets/tulip-purple.mp4" autoplay muted loop playsinline></video>
+        <div class="tag tag-purple">紫色鬱金香</div>
+      </div>
+    </div>
+    <div class="credit">講師　<b>林翊婷</b></div>
+  </section>
+
+  <!-- 2. INSTRUCTOR + SHOWREEL -->
+  <section class="slide inst">
+    <div class="left">
+      <div class="photo-wrap">
+        <div class="ring"></div>
+        <img src="assets/instructor.png" alt="講師 林翊婷">
+      </div>
+      <span class="eyebrow" style="margin-bottom:6px;">講師介紹</span>
+      <h2>林翊婷</h2>
+      <h3>Fenny Studio｜毛根手作花藝講師</h3>
+      <ul>
+        <li>專注毛根手作花藝設計與教學</li>
+        <li>擅長把細膩花型拆成簡單步驟，零基礎也能完成</li>
+        <li>帶領企業團體、親子與社群手作活動經驗豐富</li>
+        <li>理念：用雙手做一朵不凋謝的花，把溫度帶回家</li>
+      </ul>
+    </div>
+    <div class="right">
+      <div class="showreel-label">🌷 精選毛根手作作品</div>
+      <div class="reel">
+        <div class="cell"><video src="assets/reel/01.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="cell"><video src="assets/reel/02.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="cell"><video src="assets/reel/03.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="cell"><video src="assets/reel/04.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="cell"><video src="assets/reel/05.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="cell"><video src="assets/reel/06.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="cell"><video src="assets/reel/07.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="cell"><video src="assets/reel/08.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="cell"><video src="assets/reel/09.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="cell"><video src="assets/reel/10.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="cell"><video src="assets/reel/11.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="cell"><video src="assets/reel/12.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="cell"><video src="assets/reel/13.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="cell"><video src="assets/reel/14.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="cell"><video src="assets/reel/15.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="cell"><video src="assets/reel/16.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="cell"><video src="assets/reel/17.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="cell"><video src="assets/reel/18.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. TIMELINE -->
+  <section class="slide">
+    <span class="eyebrow">課程時間分配</span>
+    <h2>90 分鐘・五階段流程</h2>
+    <p class="lead">從暖身到完成兩朵鬱金香與漸層插瓶，循序漸進、輕鬆完成。</p>
+    <div class="timeline">
+      <div class="tl-row">
+        <div class="tl-time"><b>5</b><span>MIN</span></div>
+        <div class="tl-body"><h3>開場暖身</h3><p>活動介紹、材料認識與今日成品搶先看，帶大家進入手作氛圍。</p></div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-time"><b>25</b><span>MIN</span></div>
+        <div class="tl-body"><h3>第一階段・花朵製作與講解</h3><p>示範毛根花瓣纏繞與塑形，完成第一朵鬱金香的花頭。</p></div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-time"><b>15</b><span>MIN</span></div>
+        <div class="tl-body"><h3>組裝與講解</h3><p>花頭與花莖、葉片的組合固定，學會穩固又自然的組裝手法。</p></div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-time"><b>30</b><span>MIN</span></div>
+        <div class="tl-body"><h3>第二朵花製作</h3><p>運用第一朵的技巧，獨立完成第二朵鬱金香，加深熟練度。</p></div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-time"><b>15</b><span>MIN</span></div>
+        <div class="tl-body"><h3>插花瓶與漸層染色</h3><p>將完成的手作鬱金香插入花瓶，並作漸層染色，完成專屬作品。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. CLOSING -->
+  <section class="slide closing">
+    <div class="logo-slot">三得利 LOGO 預留區</div>
+    <div class="big">🌷</div>
+    <h1>用雙手，做一朵不凋謝的花</h1>
+    <p class="lead" style="margin-top:14px;">感謝大家的參與，期待今天的鬱金香為你帶來好心情。</p>
+    <p style="margin-top:22px;color:var(--pink-deep);font-weight:700;letter-spacing:2px;">Fenny Studio ・ 毛根手作花藝　｜　講師　林翊婷</p>
+  </section>
+
+</div>
+
+<div class="nav">
+  <button id="prev" aria-label="上一頁">‹</button>
+  <span class="count" id="count">1 / 4</span>
+  <button id="next" aria-label="下一頁">›</button>
+</div>
+
+<script>
+  const deck=document.getElementById('deck');
+  function fit(){
+    const s=Math.min(window.innerWidth/1280,(window.innerHeight-10)/720);
+    deck.style.setProperty('--s',s);
+  }
+  window.addEventListener('resize',fit);fit();
+
+  const slides=[...document.querySelectorAll('.slide')];
+  let i=0;
+  const count=document.getElementById('count');
+  const progress=document.getElementById('progress');
+  function show(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,idx)=>s.classList.toggle('active',idx===i));
+    count.textContent=(i+1)+' / '+slides.length;
+    progress.style.width=((i+1)/slides.length*100)+'%';
+  }
+  document.getElementById('next').onclick=()=>show(i+1);
+  document.getElementById('prev').onclick=()=>show(i-1);
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown')show(i+1);
+    if(e.key==='ArrowLeft'||e.key==='PageUp')show(i-1);
+    if(e.key==='Home')show(0);
+    if(e.key==='End')show(slides.length-1);
+  });
+  show(0);
+</script>
+</body>
+</html>
